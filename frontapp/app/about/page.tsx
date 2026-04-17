@@ -3,5 +3,5 @@ export default function About() {
         <div>
             <div>소개</div>
         </div>
-    )
+    );
 }
