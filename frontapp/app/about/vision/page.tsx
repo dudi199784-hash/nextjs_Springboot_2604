@@ -3,6 +3,5 @@ export default function Vision() {
         <div>
             <div>비전</div>
         </div>
-    )
-        
+    );     
 }
