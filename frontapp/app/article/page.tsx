@@ -40,6 +40,7 @@ export default function ArticleDetail() {
                         <li key={article.id}>
                             {article.id}/<Link href={`/article/${article.id}`}>{article.subject}</Link>/{article.createDate}
                             <button onClick={()=> handleDelete(article.id)}>삭제</button>
+                            <button onClick={()=> handleDelete(article.id)}>수정</button>
                         </li>
                     )}
                 </ul>    
