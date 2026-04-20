@@ -17,6 +17,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         if (request.getRequestURI().equals("/api/v1/members/login") ||
                 request.getRequestURI().equals("/api/v1/members/logout")) {
             filterChain.doFilter(request,response);
+            return;
         }
 
         String accessToken = "";

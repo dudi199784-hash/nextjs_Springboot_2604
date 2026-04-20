@@ -1,17 +1,21 @@
 package com.rest.global.jwt;
 
+import com.rest.domain.member.entity.Member;
 import com.rest.global.util.Util;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 import java.util.Base64;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
+@Component
 public class JwtProvider {
     @Value("${custom.jwt.secretKey}")
     private String secretKeyOrigin;
@@ -19,7 +23,7 @@ public class JwtProvider {
     private SecretKey cachedSecretKey;
 
     public SecretKey getSecretKey() {
-        if (cachedSecretKey == null) cachedSecretKey = getSecretKey();
+        if (cachedSecretKey == null) cachedSecretKey = _getSecretKey();
         return cachedSecretKey;
     }
 
@@ -28,7 +32,12 @@ public class JwtProvider {
         return Keys.hmacShaKeyFor(keyBase64Encoded.getBytes());
     }
 
-    public String getToken(Map<String, Object> claims, int seconds) {
+    public String genToken(Member member, int seconds) {
+
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("id", member.getId());
+        claims.put("username", member.getUsername());
+
         long now = new Date().getTime();
         Date accessTokenExpiresIn = new Date(now + 1000L * seconds);
         return Jwts.builder()
