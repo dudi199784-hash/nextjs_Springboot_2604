@@ -39,7 +39,7 @@ public class MemberService {
 
     public SecurityUser getUserFromAccessToken(String accessToken) {
         Map<String, Object> payloadBody = jwtProvider.getClaims(accessToken);
-        long id = (int)  payloadBody.get("id");
+        long id = (int) payloadBody.get("id");
         String username = (String) payloadBody.get("username");
         List<GrantedAuthority> authorities = new ArrayList<>();
 
@@ -51,6 +51,7 @@ public class MemberService {
     }
 
     public RsData<String> refreshAccessToken(String refreshToken) {
+        System.out.println("쿠키 refreshToken = " + refreshToken);
         Member member = memberRepository.findByRefreshToken(refreshToken).orElseThrow(() -> new RuntimeException("존재하지 않는 리프래시 토큰입니다."));
         String accesToken = jwtProvider.genAccessToken(member);
 
@@ -73,10 +74,10 @@ public class MemberService {
 
         // accessToken 생성
         String accessToken = jwtProvider.genAccessToken(member);
-
         // refreshToken 생성
         String refreshToken = jwtProvider.genRefreshToken(member);
-
+        member.setRefreshToken(refreshToken);
+        memberRepository.save(member);
         System.out.println("accessToken: " + accessToken);
 
         return RsData.of("200-1","로그인 성공", new AuthAndMakeTokensResponseBody(member, accessToken, refreshToken));

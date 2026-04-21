@@ -23,6 +23,7 @@ public class ApiV1MemberController {
 
     @Getter
     public static class LoginRequestBody {
+        @NotBlank
         private String username;
         @NotBlank
         private String password;
@@ -37,7 +38,8 @@ public class ApiV1MemberController {
     @PostMapping("/login")
     public RsData<LoginResponseBody> login(@Valid @RequestBody LoginRequestBody loginRequestBody, HttpServletResponse resp) {
         // username, password => accessToken
-       RsData<MemberService.AuthAndMakeTokensResponseBody> authAndMakeTokensRs = memberService.authAndMakeTokens(loginRequestBody.getUsername(), loginRequestBody.getPassword());
+       RsData<MemberService.AuthAndMakeTokensResponseBody> authAndMakeTokensRs =
+               memberService.authAndMakeTokens(loginRequestBody.getUsername(), loginRequestBody.getPassword());
 
 
         rq.setCrossDomainCookie("accessToken", authAndMakeTokensRs.getData().getAccessToken());
@@ -50,9 +52,20 @@ public class ApiV1MemberController {
         );
     }
 
+    @Getter
+    @AllArgsConstructor
+    public static class MeResponseBody {
+        private final MemberDto memberDto;
+    }
+
     @GetMapping("/me")
-    public String me() {
-        return "내정보";
+    public RsData<MeResponseBody> me() {
+        Member member = rq.getMember();
+        return RsData.of(
+                "200",
+                "내 정보 조회 성공",
+                new MeResponseBody(new MemberDto(member))
+        );
     }
 
     @PostMapping("/logout")
