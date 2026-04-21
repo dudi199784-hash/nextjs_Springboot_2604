@@ -1,10 +1,12 @@
 'use client'
 
-import { useParams } from 'next/navigation'
+import api from '@/app/utils/api'
+import { useParams, useRouter } from 'next/navigation'
 import {useState, useEffect} from 'react'
 
 export default function ArticleEdit() {    
     const params = useParams()
+    const router = useRouter()
     const [article, setArticle] = useState({subject: '', content: ''})
     
     useEffect(() => {
@@ -12,34 +14,29 @@ export default function ArticleEdit() {
     },[])
 
     const fetchArticle = () => {
-        fetch(`http://localhost:8090/api/v1/articles/${params.id}`)
-        .then(result => result.json())
-        .then(result => setArticle(result.data.article))
+        api.get(`/articles/${params.id}`)
+        .then(response => setArticle(response.data.data.article))
+        .catch (err => {
+            console.log(err)
+        })
     }
 
     const handleChange = (e) => {
         const {name, value} = e.target;
 
         setArticle({...article, [name]: value})
-        console.log({...article, [name]:value})
     }
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
-    const response = await fetch(`http://localhost:8090/api/v1/articles/${params.id}`,{
-        method: 'PATCH',
-        headers: {
-            'Content-Type' : 'application/json'
-        },
-        body: JSON.stringify(article)
-    })
-
-    if (response.ok) {
-        alert('success update')
-    }else {
-        alert('update fail')
-    }
+        await api.patch(`/articles/${params.id}`, article)
+        .then(function (response) {
+            console.log(response)
+            router.push('/article')
+        })
+        .catch(function (error) {
+            console.log(error)
+        })
     }
 
 
