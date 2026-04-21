@@ -31,6 +31,7 @@ public class ApiSecurityConfig {
                                 .requestMatchers("/api/*/articles").permitAll()
                                 .requestMatchers("/api/*/articles/*").permitAll()
                                 .requestMatchers(HttpMethod.POST,"/api/*/members/login").permitAll()
+                                .requestMatchers(HttpMethod.POST,"/api/*/members/logout").permitAll()
                                 .anyRequest().authenticated()
                 )
                 .csrf(csrf -> csrf.disable()) // csrf 토큰 끄기
@@ -52,6 +53,8 @@ public class ApiSecurityConfig {
         configuration.addAllowedHeader("*");                        // 모든 요청 헤더 허용
         configuration.setAllowCredentials(true);                    // 쿠키 및 인증 정보 포함 허용
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+
+        source.registerCorsConfiguration("/**", configuration);
         return source;
     }
 }
