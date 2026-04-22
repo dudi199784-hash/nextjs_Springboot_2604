@@ -2,9 +2,11 @@
 
 import api from '@/app/utils/api'
 import {useState, useEffect} from 'react'
+import { useRouter } from 'next/navigation'
 
 export default function Login() {    
     const [user, setUser] = useState({username: '', password: ''})
+    const router = useRouter()
 
     const handleChange = (e) => {
         const {name, value} = e.target;
@@ -14,10 +16,19 @@ export default function Login() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         await api.post('/members/login', user)
+        .then(() => {
+            alert(`${user.username}님 환영합니다 !!`)
+            router.push("/")
+        })
+        
     }
 
     const handleLogout = async () => {
         await api.post('/members/logout')
+        .then(() => {
+            alert(`${user.username}님 안녕히 가세요`)
+            router.push("/")
+        })
     }
 
 
