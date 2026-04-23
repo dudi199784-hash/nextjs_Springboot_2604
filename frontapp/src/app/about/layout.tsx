@@ -1,3 +1,6 @@
+import ReactQueryProviders from "@/src/utils/ReactQueryProviders";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+
 export default function AboutLayout({
   children,
 }: Readonly<{

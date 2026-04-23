@@ -48,9 +48,12 @@ public class Rq {
     }
 
     public String getCookie(String name){
-        Cookie[] cokkies = req.getCookies();
+        Cookie[] cookies = req.getCookies();
 
-        return Arrays.stream(cokkies)
+//        테스트용
+        if (cookies == null){ return "";}
+
+        return Arrays.stream(cookies)
                 .filter(cookie -> cookie.getName().equals(name))
                 .findFirst()
                 .map(Cookie::getValue)
